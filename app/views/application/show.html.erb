@@ -1,0 +1,14 @@
+<div ng-controller="ImportAppCtrl">
+    <div class="btn btn-default" 
+      ngf-select="uploadFile($file)"
+      ngf-model-invalid="errFiles"
+      ngf-pattern="*.csv"
+      accept="text/csv"
+      ngf-multiple="false">
+        <span class="glyphicon glyphicon-import"></span>Import from CSV
+    </div>
+
+    <div class="alert alert-warning" ng-show="errFiles && errFiles.length > 0">
+        Please select CSV file.
+    </div>
+</div>
