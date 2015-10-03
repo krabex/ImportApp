@@ -23,6 +23,9 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 #Front-end assets managing
 gem 'bower-rails'
 
+#File uploading
+gem 'paperclip'
+
 gem 'angular-rails-templates'
 
 # Use ActiveModel has_secure_password

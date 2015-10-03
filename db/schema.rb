@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151003101415) do
+ActiveRecord::Schema.define(version: 20151003152122) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,5 +51,18 @@ ActiveRecord::Schema.define(version: 20151003101415) do
   end
 
   add_index "operations", ["company_id"], name: "index_operations_on_company_id", using: :btree
+
+  create_table "parsing_files", force: :cascade do |t|
+    t.integer  "parsed_rows",       default: 0, null: false
+    t.integer  "valid_rows",        default: 0, null: false
+    t.integer  "invalid_rows",      default: 0, null: false
+    t.integer  "state",             default: 0, null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+  end
 
 end
