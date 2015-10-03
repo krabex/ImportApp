@@ -1,0 +1,10 @@
+{
+  "name": "dsl-generated dependencies",
+  "dependencies": {
+    "bootstrap-sass-official": "latest",
+    "angular": "latest",
+    "angular-ui-bootstrap-bower": "latest",
+    "ng-file-upload-shim": "latest",
+    "ng-file-upload": "latest"
+  }
+}

@@ -12,4 +12,12 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require angular/angular
+//= require angular-rails-templates
+//= require bootstrap-sass-official
+//= require angular-ui-bootstrap-bower/ui-bootstrap.js
+//= require angular-ui-bootstrap-bower/ui-bootstrap-tpls.js
+//= require ng-file-upload-shim
+//= require ng-file-upload
+
 //= require_tree .
