@@ -1,44 +1,48 @@
 <div class="row">
   <div class="alert alert-default" ng-hide="companies">Loading companies...</div>
   <div ng-repeat="company in companies">
-    <h2 class="col-md-4">{{company.name}}</h2>
-    <div class="col-md-4">
-      <ul>
-        <li>Operations count: {{ company.stats.operation_count }}</li>
-        <li>Operations amount average: {{ company.stats.operation_amount_average | number:2 }}</li>
-      </ul>
+    <div class="row">
+      <h2 class="col-md-4">{{company.name}}</h2>
+      <div class="col-md-4">
+        <ul>
+          <li>Operations count: {{ company.stats.operation_count }}</li>
+          <li>Operations amount average: {{ company.stats.operation_amount_average | number:2 }}</li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <ul>
+          <li>Current month maximal amount: {{ company.stats.operation_max_amount || 0 }}</li>
+          <li>Accepted operations count: {{ company.stats.accepted_operation_count }}</li>
+        </ul>
+      </div>
     </div>
-    <div class="col-md-4">
-      <ul>
-        <li>Current month maximal amount: {{ company.stats.operation_max_amount || 0 }}</li>
-        <li>Accepted operations count: {{ company.stats.accepted_operation_count }}</li>
-      </ul>
+    <div class="row">
+      <table ng-show="company.operations && company.operations.length > 0" class="table table-condensed">
+        <thead>
+          <tr>
+            <th class="col-md-1">Invoice number</th>
+            <th class="col-md-1">Invoice date</th>
+            <th class="col-md-1">Operation date</th>
+            <th class="col-md-1">Amount</th>
+            <th class="col-md-2">Reporter</th>
+            <th class="col-md-3">Notes</th>
+            <th class="col-md-1">Status</th>
+            <th class="col-md-2">Kind</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr ng-repeat="operation in company.operations" ng-show="meetsFilterCriteria(operation)">
+            <td class="col-md-1">{{ operation.invoice_num }}</td>
+            <td class="col-md-1">{{ operation.invoice_date }}</td>
+            <td class="col-md-1">{{ operation.operation_date }}</td>
+            <td class="col-md-1">{{ operation.amount | number:2 }}</td>
+            <td class="col-md-2">{{ operation.reporter }}</td>
+            <td class="col-md-3">{{ operation.notes }}</td>
+            <td class="col-md-1">{{ operation.status }}</td>
+            <td class="col-md-2">{{ operation.kind }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <table ng-show="company.operations && company.operations.length > 0" class="table-condensed">
-      <thead>
-        <tr>
-          <th class="col-md-1">Invoice number</th>
-          <th class="col-md-1">Invoice date</th>
-          <th class="col-md-1">Operation date</th>
-          <th class="col-md-1">Amount</th>
-          <th class="col-md-2">Reporter</th>
-          <th class="col-md-3">Notes</th>
-          <th class="col-md-1">Status</th>
-          <th class="col-md-2">Kind</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr ng-repeat="operation in company.operations">
-          <td class="col-md-1">{{ operation.invoice_num }}</td>
-          <td class="col-md-1">{{ operation.invoice_date }}</td>
-          <td class="col-md-1">{{ operation.operation_date }}</td>
-          <td class="col-md-1">{{ operation.amount | number:2 }}</td>
-          <td class="col-md-2">{{ operation.reporter }}</td>
-          <td class="col-md-3">{{ operation.notes }}</td>
-          <td class="col-md-1">{{ operation.status }}</td>
-          <td class="col-md-2">{{ operation.kind }}</td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </div>

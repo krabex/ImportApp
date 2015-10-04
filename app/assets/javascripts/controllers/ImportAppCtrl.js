@@ -2,7 +2,8 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
 
   var CHECK_PARSING_PROGRESS_INTERVAL_IN_MS = 2000;
   $scope.fileId;
-  $scope.inverval
+  $scope.inverval;
+  $scope.filter = "";
 
   $scope.uploadFile = function(file) {
     if(file) {
@@ -49,6 +50,14 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
       });
       console.log($scope.companies);
     });
+  }
+
+  $scope.meetsFilterCriteria = function(operation) {
+    return $scope.filter == "" ||
+           $scope.filter == operation.invoice_num ||
+           $scope.filter == operation.reporter ||
+           $scope.filter == operation.status ||
+           $scope.filter == operation.kind;
   }
 
 });

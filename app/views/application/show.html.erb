@@ -34,7 +34,18 @@
         </div>
     </div>
     <div class="row">
-        <!-- filter input -->
+        <p>
+            <div class="input-group">
+                <span class="input-group-addon" id="input-addon-filter">
+                    <span class="glyphicon glyphicon-filter"></span>
+                </span>
+                <input type="text" 
+                  class="form-control" 
+                  placeholder="filter" 
+                  aria-describedby="input-addon-filter"
+                  ng-model="filter">
+            </div>
+        </p>
     </div>
     <%= render "companies_table" %>
 </div>
