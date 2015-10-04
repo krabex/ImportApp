@@ -25,6 +25,8 @@ gem 'bower-rails'
 
 #File uploading
 gem 'paperclip'
+# Jobs
+gem 'delayed_job_active_record'
 
 gem 'angular-rails-templates'
 
