@@ -43,8 +43,11 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
       url: '/companies',
       method: 'GET'
     }).success(function(response) {
-      $scope.companies = response;
-      console.log(response);
+      $scope.companies = response.companies;
+      angular.forEach($scope.companies, function(v,k) {
+        v.stats = response.stats[k];
+      });
+      console.log($scope.companies);
     });
   }
 
