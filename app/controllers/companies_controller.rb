@@ -1,10 +1,10 @@
 class CompaniesController < ActionController::Base
   def index
-    @companies.all.includes(:operations)
+    @companies = Company.all.includes(:operations)
 
     respond_to do |format|
       format.json {
-        render json: @companies, includes: :operations
+        render json: @companies, include: :operations
       }
     end
   end

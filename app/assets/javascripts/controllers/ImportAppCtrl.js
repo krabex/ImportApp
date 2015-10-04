@@ -32,7 +32,18 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
       if(response.state == "parsed") {
         $interval.cancel($scope.interval);
         $scope.fileProcessing = false;
+        $scope.loadCompanies();
       }
+      console.log(response);
+    });
+  }
+
+  $scope.loadCompanies = function() {
+    $http({
+      url: '/companies',
+      method: 'GET'
+    }).success(function(response) {
+      $scope.companies = response;
       console.log(response);
     });
   }

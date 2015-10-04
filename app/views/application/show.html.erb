@@ -1,4 +1,4 @@
-<div class="container container-fluid" ng-controller="ImportAppCtrl">
+<div class="container container-fluid" ng-controller="ImportAppCtrl" ng-init="loadCompanies()">
     <div class="row">
         <div class="btn btn-default col-md-2"
           ng-disabled="fileProcessing" 
@@ -33,4 +33,8 @@
             </ul>
         </div>
     </div>
+    <div class="row">
+        <!-- filter input -->
+    </div>
+    <%= render "companies_table" %>
 </div>
