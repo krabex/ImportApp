@@ -9,4 +9,7 @@ Rails.application.routes.draw do
     get 'stats', on: :member
   end
 
+  get 'downloads/export_csv/:filter', to: 'downloads#export_csv'
+  resources :downloads, only: [:show]
+
 end

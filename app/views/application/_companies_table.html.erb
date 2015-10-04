@@ -2,7 +2,11 @@
   <div class="alert alert-default" ng-hide="companies">Loading companies...</div>
   <div ng-repeat="company in companies">
     <div class="row">
-      <h2 class="col-md-4">{{company.name}}</h2>
+      <h2 class="col-md-4">{{company.name}}
+        <div class="btn btn-default" ng-click="export()">
+            <span class="glyphicon glyphicon-export"></span>Export
+        </div>
+      </h2>
       <div class="col-md-4">
         <ul>
           <li>Operations count: {{ company.stats.operation_count }}</li>

@@ -60,4 +60,14 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
            $scope.filter == operation.kind;
   }
 
+  $scope.export = function() {
+    $http({
+      url: '/downloads/export_csv/' + $scope.filter,
+      method: 'GET'
+    }).success(function(response) {
+      $scope.exportFileId = response.id;
+      console.log($scope.exportFileId);
+    });
+  }
+
 });
