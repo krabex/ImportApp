@@ -13,5 +13,7 @@
 /tmp
 
 /public/system/*
+/public/downloads/*.csv
+/public/assets/
 
 config/database.yml
