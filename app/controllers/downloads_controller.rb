@@ -1,8 +1,9 @@
 class DownloadsController < ActionController::Base
 
   def export_csv
-    logger.info "begin"
-    @download = Download.create!(name: "test.csv")
+    @download = Download.create!(name: DateTime.now.strftime("%d_%m_%Y_%s.csv"))
+
+    Delayed::Job.enqueue ::ExportOperationsToCsvJob.new(@download.id, params[:filter])
 
     respond_to do |format|
       format.json {
@@ -18,4 +19,19 @@ class DownloadsController < ActionController::Base
     
     send_file @download.name if @download.ready_to_download?  
   end
+
+  def state
+    @download = Download.find(params[:id])
+    url = "/downloads/" + @download.name if @download.ready_for_download?
+
+    respond_to do |format|
+      format.json {
+        render json: {
+          state: @download.as_json(only: [:state, :progress]),
+          url: url
+        }
+      }
+    end
+  end
+
 end

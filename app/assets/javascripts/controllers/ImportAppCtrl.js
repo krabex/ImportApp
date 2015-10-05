@@ -2,7 +2,8 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
 
   var CHECK_PARSING_PROGRESS_INTERVAL_IN_MS = 2000;
   $scope.fileId;
-  $scope.inverval;
+  $scope.importInterval;
+  $scope.exportInterval;
   $scope.filter = "";
 
   $scope.uploadFile = function(file) {
@@ -15,7 +16,7 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
       }).success(function(response) {
         if(response.succeed) {
           $scope.fileId = response.id;
-          $scope.interval = $interval(
+          $scope.importInterval = $interval(
             $scope.loadParsingProgress,
             CHECK_PARSING_PROGRESS_INTERVAL_IN_MS
           );
@@ -31,7 +32,7 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
     }).success(function(response) {
       $scope.fileStats = response;
       if(response.state == "parsed") {
-        $interval.cancel($scope.interval);
+        $interval.cancel($scope.importInterval);
         $scope.fileProcessing = false;
         $scope.loadCompanies();
       }
@@ -61,12 +62,33 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
   }
 
   $scope.export = function() {
+    $scope.downloadState = { "state": "Sending request..." };
+
     $http({
       url: '/downloads/export_csv/' + $scope.filter,
-      method: 'GET'
+      method: 'POST'
     }).success(function(response) {
       $scope.exportFileId = response.id;
       console.log($scope.exportFileId);
+      $scope.exportInterval = $interval(
+        $scope.loadGeneratingFileProgress,
+        CHECK_PARSING_PROGRESS_INTERVAL_IN_MS
+      );
+
+    });
+  }
+
+  $scope.loadGeneratingFileProgress = function() {
+    $http({
+      url: '/downloads/' + $scope.exportFileId + '/state',
+      method: 'get'
+    }).success(function(response) {
+      $scope.downloadState = response.state;
+      $scope.downloadUrl = response.url;
+      if($scope.downloadState.state == "ready_for_download") {
+        $interval.cancel($scope.exportInterval);
+      }
+      console.log(response);
     });
   }
 
