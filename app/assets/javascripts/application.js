@@ -21,3 +21,5 @@
 //= require ng-file-upload
 
 //= require_tree .
+//= require websocket_rails/main
+
