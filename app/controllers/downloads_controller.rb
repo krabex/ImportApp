@@ -20,18 +20,4 @@ class DownloadsController < ActionController::Base
     send_file @download.name if @download.ready_to_download?  
   end
 
-  def state
-    @download = Download.find(params[:id])
-    url = "/downloads/" + @download.name if @download.ready_for_download?
-
-    respond_to do |format|
-      format.json {
-        render json: {
-          state: @download.as_json(only: [:state, :progress]),
-          url: url
-        }
-      }
-    end
-  end
-
 end
