@@ -16,28 +16,24 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
       }).success(function(response) {
         if(response.succeed) {
           $scope.fileId = response.id;
-          $scope.importInterval = $interval(
-            $scope.loadParsingProgress,
-            CHECK_PARSING_PROGRESS_INTERVAL_IN_MS
-          );
+          
+          $scope.dispatcher = new WebSocketRails('localhost:3000/websocket');
+          $scope.channel = $scope.dispatcher.subscribe('parsing_file');
+
+          $scope.channel.bind('parsing_status', $scope.onParsingStatusReceived);
         }
       });
     }
   }
 
-  $scope.loadParsingProgress = function() {
-    $http({
-      url: '/parsing_files/' + $scope.fileId + '/state/',
-      method: 'GET'
-    }).success(function(response) {
-      $scope.fileStats = response;
-      if(response.state == "parsed") {
-        $interval.cancel($scope.importInterval);
+  $scope.onParsingStatusReceived = function(data) {
+      $scope.fileStats = data;
+      if(data.state == "parsed") {
         $scope.fileProcessing = false;
         $scope.loadCompanies();
       }
-      console.log(response);
-    });
+      $scope.$apply();
+      console.log($scope.fileStats);
   }
 
   $scope.loadCompanies = function() {

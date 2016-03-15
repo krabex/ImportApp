@@ -2,7 +2,7 @@ require 'csv'
 
 #module
   class ParsingCsvJob < Struct.new(:parsing_file_id)
-    NB_OF_PARSED_ROWS_NEEDED_TO_UPDATE_STATS = 500
+    NB_OF_PARSED_ROWS_NEEDED_TO_UPDATE_STATS = 200
 
     def perform
       @valid_rows = @parsed = @parsed_after_update_file = 0
@@ -79,6 +79,8 @@ require 'csv'
           invalid_rows: @parsed - @valid_rows,
           parsed_rows: @parsed
         })
+        WebsocketRails[:parsing_file].trigger(:parsing_status, 
+          @parsing_file.as_json(only: [:state, :valid_rows, :invalid_rows, :parsed_rows]))
       end
 
   end
