@@ -1,4 +1,5 @@
-ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload) {
+ImportApp.controller('ImportAppCtrl', ['$scope', '$http', 'CsvFileService', 
+  function($scope, $http, CsvFileService) {
 
   $scope.fileId;
   $scope.filter = "";
@@ -7,10 +8,8 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
     if(file) {
       $scope.fileProcessing = true;
       $scope.fileStats = {"state": "uploading file"}
-      Upload.upload({ 
-        url: '/parsing_files', 
-        file: file,
-      }).success(function(response) {
+
+      CsvFileService.uploadFile(file).success(function(response) {
         if(response.succeed) {
           $scope.fileId = response.id;
           
@@ -57,10 +56,7 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
   $scope.export = function() {
     $scope.downloadState = { "state": "Sending request..." };
 
-    $http({
-      url: '/downloads/export_csv/' + $scope.filter,
-      method: 'POST'
-    }).success(function(response) {
+    CsvFileService.exportFile($scope.filter).success(function(response) {
       $scope.exportFileId = response.id;
       $scope.dispatcher = new WebSocketRails('localhost:3000/websocket');
       $scope.channel = $scope.dispatcher.subscribe('exporting_file');
@@ -75,4 +71,4 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
     $scope.$apply();
   }
 
-});
+}]);
