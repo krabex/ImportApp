@@ -1,9 +1,7 @@
 class CompaniesController < ActionController::Base
   def index
     @companies = Company.all.includes(:operations)
-    @stats = []
-
-    @companies.each { |c| @stats << generate_stats(c) }
+    @stats = @companies.map{ |c| generate_stats(c) }
 
     respond_to do |format|
       format.json {
@@ -29,12 +27,11 @@ class CompaniesController < ActionController::Base
   protected
     
     def generate_stats company
-      stats = Hash.new
-      stats["operation_count"] = company.operations.count
-      stats["operation_amount_average"] = company.operations.average(:amount)
-      stats["operation_max_amount"] = company.operations.current_month.maximum(:amount)
-      stats["accepted_operation_count"] = company.operations.accepted.count
-
-      return stats
+      {
+        operation_count: company.operations.count,
+        operation_amount_average: company.operations.average(:amount),
+        operation_max_amount: company.operations.current_month.maximum(:amount),
+        accepted_operation_count: company.operations.accepted.count
+      }
     end
 end 
