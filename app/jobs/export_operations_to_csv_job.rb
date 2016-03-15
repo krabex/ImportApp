@@ -2,7 +2,7 @@ require 'csv'
 
 #module
   class ExportOperationsToCsvJob < Struct.new(:download_id, :filter)
-    NB_OF_ROWS_NEEDED_TO_UPDATE_STATS = 1000
+    NB_OF_ROWS_NEEDED_TO_UPDATE_STATS = 300
 
     def perform
       @download = Download.find(download_id)
@@ -23,8 +23,8 @@ require 'csv'
         end
       end
 
-      update_download_stats
       @download.ready_for_download!
+      update_download_stats
     end
 
     protected
@@ -39,9 +39,16 @@ require 'csv'
 
       def update_download_stats
         @download.update_attributes({
-          progress: (@generated_rows*100 / @operations.count).to_i,
+          progress: (@generated_rows*100 / @operations.count).to_i
         })
-        @generate_rows_after_update = 0
+
+        @generated_rows_after_update = 0
+        res = {
+          state: @download.state,
+          progress: @download.progress,
+          url: "/downloads/" + @download.name
+        }
+        WebsocketRails[:exporting_file].trigger(:exporting_status, res.as_json())
       end
 
       def csv_row(op)

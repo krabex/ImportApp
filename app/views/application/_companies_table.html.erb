@@ -10,14 +10,13 @@
         </h2>
         <div class="col-md-12" ng-show="downloadState.state">
           <progressbar max="100" 
-            animate="true" 
             type="primary"
             value="downloadState.progress"
             ng-show="downloadState.state == 'preparing_file'">
             <span style="color:white; white-space:nowrap;">{{ downloadState.progress }}%</span>
           </progressbar>
           <p>State: {{ downloadState.state  }}</p>
-          <a ng-href="{{downloadUrl}}" ng-show="downloadState.state == 'ready_for_download'">
+          <a ng-href="{{downloadState.url}}" ng-show="downloadState.state == 'ready_for_download'">
             Click here to start download
           </a>
         </div>

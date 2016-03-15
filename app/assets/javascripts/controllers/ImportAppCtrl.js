@@ -1,9 +1,6 @@
 ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload) {
 
-  var CHECK_PARSING_PROGRESS_INTERVAL_IN_MS = 2000;
   $scope.fileId;
-  $scope.importInterval;
-  $scope.exportInterval;
   $scope.filter = "";
 
   $scope.uploadFile = function(file) {
@@ -65,27 +62,17 @@ ImportApp.controller('ImportAppCtrl', function($scope, $http, $interval, Upload)
       method: 'POST'
     }).success(function(response) {
       $scope.exportFileId = response.id;
-      console.log($scope.exportFileId);
-      $scope.exportInterval = $interval(
-        $scope.loadGeneratingFileProgress,
-        CHECK_PARSING_PROGRESS_INTERVAL_IN_MS
-      );
+      $scope.dispatcher = new WebSocketRails('localhost:3000/websocket');
+      $scope.channel = $scope.dispatcher.subscribe('exporting_file');
 
+      $scope.channel.bind('exporting_status', $scope.onExportingStatusReceived);
     });
   }
 
-  $scope.loadGeneratingFileProgress = function() {
-    $http({
-      url: '/downloads/' + $scope.exportFileId + '/state',
-      method: 'get'
-    }).success(function(response) {
-      $scope.downloadState = response.state;
-      $scope.downloadUrl = response.url;
-      if($scope.downloadState.state == "ready_for_download") {
-        $interval.cancel($scope.exportInterval);
-      }
-      console.log(response);
-    });
+  $scope.onExportingStatusReceived = function(data) {
+    $scope.downloadState = data;
+    console.log($scope.downloadState);
+    $scope.$apply();
   }
 
 });
