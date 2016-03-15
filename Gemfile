@@ -32,6 +32,7 @@ gem 'daemons'
 gem 'angular-rails-templates'
 #Websockets
 gem 'websocket-rails'
+gem 'faye-websocket', '0.10.0'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
