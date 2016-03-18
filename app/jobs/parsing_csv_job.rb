@@ -5,35 +5,37 @@ require 'csv'
     NB_OF_PARSED_ROWS_NEEDED_TO_UPDATE_STATS = 200
 
     def perform
-      @valid_rows = @parsed = @parsed_after_update_file = 0
-
       @parsing_file = ParsingFile.find(parsing_file_id)
       @parsing_file.parsing!
 
-      file = File.open(@parsing_file.file.path)
-      headers = []
-
-      file.each_line do |line|
-        begin
-          row = CSV.parse_line(line)
-      
-          if(headers.empty?)
-            headers = row
-          else
-            parse_row(headers.zip(row).to_h)
-          end
-        rescue CSV::MalformedCSVError; end
-     
-        @parsed += 1
-        @parsed_after_update_file += 1
-        update_file_stats if @parsed_after_update_file >= NB_OF_PARSED_ROWS_NEEDED_TO_UPDATE_STATS
-      end
+      parse_file File.open(@parsing_file.file.path)
 
       @parsing_file.parsed!
       update_file_stats
     end
 
     protected
+
+      def parse_file file
+        @valid_rows = @parsed = @parsed_after_update_file = 0
+        headers = []
+
+        file.each_line do |line|
+          begin
+            row = CSV.parse_line(line)
+        
+            if(headers.empty?)
+              headers = row
+            else
+              @valid_rows += 1 if parse_row(headers.zip(row).to_h)
+            end
+          rescue CSV::MalformedCSVError; end
+       
+          @parsed += 1
+          @parsed_after_update_file += 1
+          update_file_stats if @parsed_after_update_file >= NB_OF_PARSED_ROWS_NEEDED_TO_UPDATE_STATS
+        end
+      end
 
       def parse_row row
         @company = Company.find_by_name(row["company"].strip) unless row["company"].nil?
@@ -50,8 +52,9 @@ require 'csv'
           })
           add_categories(@operation, row["kind"].downcase.split(";"))
           @company.operations << @operation
-          @valid_rows += 1 if @company.save
+          return @company.save
         end
+        return false
       end
 
       def add_categories(operation, categories)
@@ -61,7 +64,7 @@ require 'csv'
       end
 
       def parse_date(date)
-        permitted_formats = ["%m/%d/%Y", "%Y-%m-%d", "%d-%m-%Y"]
+        permitted_formats = ["%m/%d/%Y", "%d-%m-%Y", "%Y-%m-%d"]
       
         begin
           result = DateTime.strptime(date, permitted_formats.shift) unless date.nil?
@@ -72,7 +75,7 @@ require 'csv'
         result
       end
 
-      def update_file_stats
+      def update_file_stats 
         @parsed_after_update_file = 0
         @parsing_file.update_attributes({
           valid_rows: @valid_rows,
