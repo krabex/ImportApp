@@ -14,16 +14,6 @@ class ParsingFilesController < ActionController::Base
     end
   end
 
-  def state
-    @file = ParsingFile.find(params[:id])
-
-    respond_to do |format|
-      format.json {
-        render json: @file, only: [:parsed_rows, :valid_rows, :invalid_rows, :state]
-      }
-    end
-  end
-
   private
     def parsing_file_params
       params.permit(:file)
